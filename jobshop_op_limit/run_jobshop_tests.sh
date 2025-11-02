@@ -10,7 +10,7 @@ usage() {
 Uso: $0 [OPCIONES]
 
 Opciones:
-  -s, --solver SOLVER       Solver a usar (chuffed, gecode, highs)
+  -s, --solver SOLVER      Solver a usar (chuffed, gecode, highs, coin-bc)
                            Si no se especifica, usa todos los disponibles
   -m, --model NUM          Número de modelo (1, 2, 3, ...)
                            Si no se especifica, usa todos los modelos
@@ -18,7 +18,7 @@ Opciones:
 
 Ejemplos:
   $0 -s highs -m 1         # Solo highs con jobshop_search_1.mzn
-  $0 -s or-tools           # or-tools con todos los modelos
+  $0 -s highs              # highs con todos los modelos
   $0 -m 1                  # Todos los solvers con jobshop_search_1.mzn
   $0                       # Todos los solvers con todos los modelos
 EOF
