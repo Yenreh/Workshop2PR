@@ -1,0 +1,80 @@
+% Generated FlatZinc statistics:
+%%%mzn-stat: paths=0
+%%%mzn-stat: flatBoolVars=1379
+%%%mzn-stat: flatIntVars=157
+%%%mzn-stat: flatBoolConstraints=490
+%%%mzn-stat: flatIntConstraints=1513
+%%%mzn-stat: evaluatedReifiedConstraints=1380
+%%%mzn-stat: method="minimize"
+%%%mzn-stat: flatTime=0.100968
+%%%mzn-stat-end
+WARNING: the --time-out flag has recently been changed.The time-out is now provided in milliseconds instead of seconds
+% Pruned 50000 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49995 learnt clauses
+% Pruned 49995 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49996 learnt clauses
+%%%mzn-stat: nodes=1870749
+%%%mzn-stat: failures=1820662
+%%%mzn-stat: restarts=96
+%%%mzn-stat: variables=14317
+%%%mzn-stat: intVars=219
+%%%mzn-stat: boolVariables=14096
+%%%mzn-stat: propagators=3133
+%%%mzn-stat: propagations=889418988
+%%%mzn-stat: peakDepth=119
+%%%mzn-stat: nogoods=1820662
+%%%mzn-stat: backjumps=42893
+%%%mzn-stat: peakMem=0.00
+%%%mzn-stat: time=59.910
+%%%mzn-stat: initTime=0.012
+%%%mzn-stat: solveTime=59.898
+%%%mzn-stat: objective=7388
+%%%mzn-stat: optTime=4.950
+%%%mzn-stat: baseMem=0.00
+%%%mzn-stat: trailMem=0.19
+%%%mzn-stat: randomSeed=1
+%%%mzn-stat-end
+end = 61
+carga_por_operario = [43, 41, 36]
+desbalance = 7
+Job 1:  18(op:1)  41(op:2)  50(op:1)  58(op:2)  60(op:2)
+Job 2:  14(op:3)  37(op:1)  40(op:2)  50(op:2)  59(op:3)
+Job 3:   0(op:3)   1(op:3)   2(op:2)   6(op:3)  10(op:1)
+Job 4:  13(op:3)  16(op:2)  21(op:3)  26(op:2)  52(op:3)
+Job 5:   3(op:1)  29(op:3)  33(op:2)  42(op:2)  43(op:2)
+Job 6:  10(op:2)  18(op:3)  25(op:1)  30(op:1)  35(op:3)
+----------
+% Time limit exceeded!
+%%%mzn-stat: nSolutions=1
+%%%mzn-stat-end

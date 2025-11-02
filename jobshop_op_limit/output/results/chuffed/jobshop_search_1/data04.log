@@ -1,0 +1,111 @@
+% Generated FlatZinc statistics:
+%%%mzn-stat: paths=0
+%%%mzn-stat: flatBoolVars=1349
+%%%mzn-stat: flatIntVars=123
+%%%mzn-stat: flatBoolConstraints=460
+%%%mzn-stat: flatIntConstraints=1448
+%%%mzn-stat: evaluatedReifiedConstraints=1350
+%%%mzn-stat: method="minimize"
+%%%mzn-stat: flatTime=0.104509
+%%%mzn-stat-end
+WARNING: the --time-out flag has recently been changed.The time-out is now provided in milliseconds instead of seconds
+% Pruned 50000 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49995 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 50000 learnt clauses
+%%%mzn-stat: nodes=3394427
+%%%mzn-stat: failures=3392819
+%%%mzn-stat: restarts=14
+%%%mzn-stat: variables=11087
+%%%mzn-stat: intVars=185
+%%%mzn-stat: boolVariables=10900
+%%%mzn-stat: propagators=3127
+%%%mzn-stat: propagations=1640857773
+%%%mzn-stat: peakDepth=119
+%%%mzn-stat: nogoods=3392819
+%%%mzn-stat: backjumps=495
+%%%mzn-stat: peakMem=0.00
+%%%mzn-stat: time=59.906
+%%%mzn-stat: initTime=0.011
+%%%mzn-stat: solveTime=59.895
+%%%mzn-stat: objective=13094
+%%%mzn-stat: optTime=57.750
+%%%mzn-stat: baseMem=0.00
+%%%mzn-stat: trailMem=0.19
+%%%mzn-stat: randomSeed=1
+%%%mzn-stat-end
+end = 110
+carga_por_operario = [61, 57]
+desbalance = 4
+Job 1:  77(op:1)  85(op:2)  87(op:1) 103(op:1) 108(op:2)
+Job 2:  39(op:1)  45(op:1)  53(op:1)  54(op:2)  57(op:1)
+Job 3:  33(op:2)  37(op:1)  64(op:1)  66(op:1)  71(op:2)
+Job 4:  13(op:2)  49(op:1)  55(op:2)  95(op:1) 103(op:2)
+Job 5:  63(op:2)  81(op:1)  84(op:1)  87(op:2)  91(op:2)
+Job 6:  53(op:2)  54(op:1)  58(op:2)  78(op:2)  85(op:1)
+----------
+% Time limit exceeded!
+%%%mzn-stat: nSolutions=1
+%%%mzn-stat-end

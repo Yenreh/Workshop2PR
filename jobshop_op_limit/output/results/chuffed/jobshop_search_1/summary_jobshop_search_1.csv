@@ -2,3 +2,7 @@ solver,model,data,end,desbalance,carga_por_operario,time_ms,nodes,failures,propa
 chuffed,jobshop_search_1,data00,32,1,"[29, 29, 28]",40793,1221894,1156773,502766040
 chuffed,jobshop_search_1,data01,58,2,"[55, 53]",59912,1807795,1694537,752668615
 chuffed,jobshop_search_1,data02,51,1,"[38, 37, 37]",59908,1589195,1496771,698152606
+chuffed,jobshop_search_1,data03,45,16,"[35, 33, 33, 19]",59916,1516066,1448738,598863248
+chuffed,jobshop_search_1,data04,110,4,"[61, 57]",59906,3394427,3392819,1640857773
+chuffed,jobshop_search_1,data05,61,7,"[43, 41, 36]",59910,1870749,1820662,889418988
+chuffed,jobshop_search_1,data06,73,38,"[62, 27, 25, 24]",59908,1114910,1041005,994985321

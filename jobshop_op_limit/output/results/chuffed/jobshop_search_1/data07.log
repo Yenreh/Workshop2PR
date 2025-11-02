@@ -1,0 +1,11 @@
+% Generated FlatZinc statistics:
+%%%mzn-stat: paths=0
+%%%mzn-stat: flatBoolVars=1842
+%%%mzn-stat: flatIntVars=143
+%%%mzn-stat: flatBoolConstraints=626
+%%%mzn-stat: flatIntConstraints=1956
+%%%mzn-stat: evaluatedReifiedConstraints=1843
+%%%mzn-stat: method="minimize"
+%%%mzn-stat: flatTime=0.108613
+%%%mzn-stat-end
+WARNING: the --time-out flag has recently been changed.The time-out is now provided in milliseconds instead of seconds
