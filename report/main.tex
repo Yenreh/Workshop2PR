@@ -1,0 +1,128 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{adjustbox}
+\usepackage[spanish]{babel}
+\usepackage{placeins}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{bookmark}
+\usepackage{longtable}
+\usepackage{booktabs}
+\graphicspath{{./images/}}
+
+% Configuracion para codigo MiniZinc
+\lstdefinelanguage{minizinc}{
+    keywords={include, constraint, solve, minimize, maximize, satisfy, var, int, bool, array, of, set, float, string, forall, exists, if, then, else, endif, let, in, where, output, predicate, function, test, ann, any, enum, opt, par, tuple, record, type},
+    keywordstyle=\color{blue}\bfseries,
+    ndkeywords={true, false, div, mod, not, and, or, xor},
+    ndkeywordstyle=\color{purple}\bfseries,
+    identifierstyle=\color{black},
+    sensitive=true,
+    comment=[l]{\%},
+    morecomment=[s]{/*}{*/},
+    commentstyle=\color{gray}\ttfamily,
+    stringstyle=\color{red}\ttfamily,
+    morestring=[b]',
+    morestring=[b]"
+}
+
+\lstset{
+    language=minizinc,
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    showstringspaces=false,
+    captionpos=b,
+    tabsize=2,
+    breakatwhitespace=false
+}
+
+\begin{document}
+\begin{titlepage}
+\centering
+{\includegraphics[width=0.2\textwidth]{logo.jpg}\par}
+\vspace{1cm}
+{\scshape\Large FACULTAD DE INGENIER\'IA DE SISTEMAS Y COMPUTACI\'ON\par}
+\vspace{3cm}
+{\scshape\Huge Informe Taller 2\par}
+\vspace{0.5cm}
+{\scshape\Large Extensiones del Job Shop Scheduling Problem\par}
+\vspace{1.5cm}
+{\Large\itshape Programaci\'on por Restricciones\par}
+\vfill
+{\Large Autores: \par}
+{\Large [C\'odigo Estudiante 1]\par}
+{\Large [C\'odigo Estudiante 2]\par}
+\vfill
+{\Large Profesor: Robinson Duque\par}
+\vspace{0.5cm}
+{\Large Noviembre 2025 \par}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{Introducci\'on}
+
+Este informe presenta el desarrollo e implementaci\'on de extensiones del problema cl\'asico de Job Shop Scheduling (JSSP) utilizando MiniZinc. El JSSP es un problema de optimizaci\'on combinatoria donde se deben planificar operaciones de m\'ultiples trabajos en diferentes m\'aquinas, respetando restricciones de precedencia y capacidad, con el objetivo de minimizar el tiempo total de finalizaci\'on (makespan).
+
+En este taller se abordan dos variaciones del problema que incorporan restricciones adicionales que reflejan contextos industriales y logísticos m\'as realistas:
+
+\begin{enumerate}
+    \item \textbf{Job Shop con Mantenimiento Programado:} Cada m\'aquina debe detenerse peri\'odicamente para mantenimiento preventivo, durante el cual no puede procesar operaciones.
+    
+    \item \textbf{Job Shop con Operarios Limitados:} Algunas m\'aquinas requieren operarios especializados, pero hay menos operarios disponibles que m\'aquinas, lo que a\~nade restricciones adicionales de asignaci\'on y concurrencia.
+\end{enumerate}
+
+Para cada problema se presentan las variables de decisi\'on, dominios, restricciones, detalles de implementaci\'on, restricciones redundantes, estrategias de ruptura de simetr\'ias, estrategias de b\'usqueda, pruebas exhaustivas y an\'alisis de resultados. Adem\'as, se exploran diferentes estrategias de b\'usqueda para evaluar su impacto en el rendimiento del solver.
+
+El objetivo principal es demostrar la capacidad de extender modelos cl\'asicos de programaci\'on por restricciones para incorporar condiciones reales, analizar el impacto de diferentes estrategias de b\'usqueda y optimizaci\'on, y evaluar el comportamiento de los solvers en instancias de complejidad variable.
+
+\newpage
+\input{problems/jobshop_maintenance}
+
+\newpage
+\input{problems/jobshop_op_limit}
+
+\newpage
+\input{problems/jobshop_op_limit_skills}
+
+\newpage
+
+\section{Conclusiones Generales}
+
+El desarrollo de este taller ha permitido aplicar t\'ecnicas avanzadas de modelamiento de problemas de optimizaci\'on combinatoria mediante programaci\'on por restricciones. La extensi\'on del Job Shop Scheduling Problem cl\'asico con restricciones adicionales ha demostrado la flexibilidad y potencia de MiniZinc para modelar problemas industriales complejos.
+
+Los aspectos m\'as relevantes aprendidos incluyen:
+
+\begin{enumerate}
+    \item \textbf{Modelamiento de restricciones complejas:} La incorporaci\'on de restricciones adicionales como mantenimiento programado y disponibilidad limitada de operarios requiere un an\'alisis cuidadoso de las interacciones entre diferentes recursos y restricciones temporales.
+    
+    \item \textbf{Uso estrat\'egico de restricciones redundantes:} La inclusi\'on de restricciones redundantes como \texttt{cumulative} puede reducir significativamente el espacio de b\'usqueda y mejorar los tiempos de resoluci\'on, incluso cuando no agregan informaci\'on sem\'antica nueva al modelo.
+    
+    \item \textbf{Ruptura de simetr\'ias:} La identificaci\'on y eliminaci\'on de simetr\'ias, especialmente en la asignaci\'on de operarios, es crucial para evitar explorar soluciones equivalentes y reducir el \'arbol de b\'usqueda.
+    
+    \item \textbf{Impacto de estrategias de b\'usqueda:} Las diferentes estrategias de b\'usqueda (\texttt{first\_fail}, \texttt{dom\_w\_deg}, \texttt{seq\_search}) tienen impactos significativamente diferentes en el rendimiento, dependiendo de la estructura del problema y la instancia espec\'ifica.
+    
+    \item \textbf{Trade-offs en optimizaci\'on multi-objetivo:} Balancear m\'ultiples objetivos como minimizar makespan y balancear carga de trabajo requiere t\'ecnicas de agregaci\'on cuidadosas y an\'alisis de sensibilidad de pesos.
+    
+    \item \textbf{Escalabilidad y l\'imites computacionales:} Las instancias m\'as grandes demuestran los l\'imites pr\'acticos de los solvers de prop\'osito general, motivando el uso de t\'ecnicas como l\'imites de tiempo, cotas superiores y estrategias de b\'usqueda especializadas.
+\end{enumerate}
+
+\section{Referencias}
+
+\begin{itemize}
+    \item MiniZinc Documentation: \url{https://www.minizinc.org/doc-latest/en/}
+    \item MiniZinc Handbook, Peter J. Stuckey et al.
+    \item Taller 2 -- Programaci\'on por Restricciones, Universidad del Valle, 2025
+    \item Brucker, P. (2007). Scheduling Algorithms. Springer.
+    \item Baptiste, P., Le Pape, C., \& Nuijten, W. (2012). Constraint-Based Scheduling. Springer.
+\end{itemize}
+
+\end{document}

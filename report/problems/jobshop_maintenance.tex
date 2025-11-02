@@ -1,0 +1,65 @@
+\section{Problema 1.1: Job Shop con Mantenimiento Programado}
+
+\subsection{Descripci\'on del Problema}
+
+En esta variaci\'on del Job Shop Scheduling Problem, cada m\'aquina debe detenerse peri\'odicamente para realizar mantenimiento preventivo. Durante estos per\'iodos de mantenimiento, la m\'aquina no est\'a disponible para procesar ninguna operaci\'on, lo que a\~nade restricciones temporales adicionales al problema cl\'asico.
+
+\textbf{Contexto industrial:} En entornos de producci\'on real, el mantenimiento preventivo es esencial para evitar fallas catastr\'oficas, prolongar la vida \'util de las m\'aquinas y garantizar la calidad del producto. Sin embargo, estos per\'iodos de inactividad deben planificarse cuidadosamente para minimizar su impacto en el tiempo total de producci\'on.
+
+\textbf{Elementos del problema:}
+\begin{itemize}
+    \item Un conjunto de \textit{jobs} (trabajos), cada uno con una secuencia ordenada de \textit{tasks} (operaciones)
+    \item Cada operaci\'on tiene una duraci\'on fija y debe ejecutarse en una m\'aquina espec\'ifica
+    \item Las operaciones de un mismo trabajo deben ejecutarse en orden (restricciones de precedencia)
+    \item Cada m\'aquina puede ejecutar solo una operaci\'on a la vez
+    \item \textbf{Nuevo:} Cada m\'aquina tiene intervalos de mantenimiento $[a_m, b_m]$ donde no est\'a disponible
+    \item \textbf{Objetivo:} Minimizar el makespan (tiempo de finalizaci\'on del \'ultimo trabajo)
+\end{itemize}
+
+\subsection{Modelamiento como CSP}
+
+\subsubsection{Par\'ametros del Modelo}
+
+[Por completar con la descripci\'on de par\'ametros]
+
+\subsubsection{Variables de Decisi\'on}
+
+[Por completar con la descripci\'on de variables]
+
+\subsubsection{Dominios}
+
+[Por completar con la descripci\'on de dominios]
+
+\subsubsection{Restricciones}
+
+[Por completar con la descripci\'on de restricciones principales]
+
+\subsection{Detalles de Implementaci\'on en MiniZinc}
+
+\subsubsection{Aspectos Relevantes}
+
+[Por completar con aspectos t\'ecnicos de la implementaci\'on]
+
+\subsubsection{Restricciones Redundantes}
+
+[Por completar con restricciones redundantes y su justificaci\'on]
+
+\subsubsection{Ruptura de Simetr\'ias}
+
+[Por completar con estrategias de ruptura de simetr\'ias]
+
+\subsection{Estrategias de B\'usqueda}
+
+[Por completar con descripci\'on de estrategias exploradas]
+
+\subsection{Pruebas Realizadas}
+
+[Por completar con casos de prueba y resultados]
+
+\subsection{An\'alisis de Resultados}
+
+[Por completar con an\'alisis comparativo]
+
+\subsection{Conclusiones del Problema 1.1}
+
+[Por completar con conclusiones espec\'ificas]
