@@ -1,0 +1,65 @@
+% Generated FlatZinc statistics:
+%%%mzn-stat: paths=0
+%%%mzn-stat: flatBoolVars=956
+%%%mzn-stat: flatIntVars=132
+%%%mzn-stat: flatBoolConstraints=344
+%%%mzn-stat: flatIntConstraints=1070
+%%%mzn-stat: evaluatedReifiedConstraints=957
+%%%mzn-stat: method="minimize"
+%%%mzn-stat: flatTime=0.0981913
+%%%mzn-stat-end
+WARNING: the --time-out flag has recently been changed.The time-out is now provided in milliseconds instead of seconds
+% Pruned 50000 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 49994 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49995 learnt clauses
+% Pruned 49995 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49994 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49992 learnt clauses
+% Pruned 49988 learnt clauses
+%%%mzn-stat: nodes=1221894
+%%%mzn-stat: failures=1156773
+%%%mzn-stat: restarts=130
+%%%mzn-stat: variables=10090
+%%%mzn-stat: intVars=184
+%%%mzn-stat: boolVariables=9904
+%%%mzn-stat: propagators=2141
+%%%mzn-stat: propagations=502766040
+%%%mzn-stat: peakDepth=83
+%%%mzn-stat: nogoods=1156773
+%%%mzn-stat: backjumps=58816
+%%%mzn-stat: peakMem=0.00
+%%%mzn-stat: time=40.793
+%%%mzn-stat: initTime=0.008
+%%%mzn-stat: solveTime=40.785
+%%%mzn-stat: objective=2785
+%%%mzn-stat: optTime=25.013
+%%%mzn-stat: baseMem=0.00
+%%%mzn-stat: trailMem=0.12
+%%%mzn-stat: randomSeed=1
+%%%mzn-stat-end
+end = 32
+carga_por_operario = [29, 29, 28]
+desbalance = 1
+Job 1:  1(op:1)  2(op:1)  6(op:2) 12(op:1) 21(op:2)
+Job 2:  3(op:2)  6(op:1) 11(op:2) 18(op:2) 19(op:2)
+Job 3:  8(op:1) 15(op:1) 19(op:1) 23(op:1) 27(op:2)
+Job 4:  0(op:1)  1(op:3)  2(op:2)  3(op:3)  9(op:3)
+Job 5: 17(op:3) 24(op:3) 27(op:3) 29(op:1) 31(op:3)
+----------
+==========
+% [X_INTRODUCED_89_ > 2784]
+%%%mzn-stat: nSolutions=1
+%%%mzn-stat-end

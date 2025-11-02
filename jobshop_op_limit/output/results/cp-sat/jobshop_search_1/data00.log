@@ -1,0 +1,15 @@
+% Generated FlatZinc statistics:
+%%%mzn-stat: paths=0
+%%%mzn-stat: flatBoolVars=950
+%%%mzn-stat: flatIntVars=130
+%%%mzn-stat: flatBoolConstraints=342
+%%%mzn-stat: flatIntConstraints=1062
+%%%mzn-stat: evaluatedReifiedConstraints=75
+%%%mzn-stat: evaluatedHalfReifiedConstraints=876
+%%%mzn-stat: method="minimize"
+%%%mzn-stat: flatTime=0.100272
+%%%mzn-stat-end
+/home/yenreh/Documents/MiniZincIDE/bin/fzn-cp-sat: error while loading shared libraries: libabsl_flags_parse.so.2407.0.0: cannot open shared object file: No such file or directory
+=====ERROR=====
+%%%mzn-stat: nSolutions=0
+%%%mzn-stat-end

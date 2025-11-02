@@ -1,0 +1,31 @@
+% Generated FlatZinc statistics:
+%%%mzn-stat: paths=0
+%%%mzn-stat: flatBoolVars=230
+%%%mzn-stat: flatIntVars=3248
+%%%mzn-stat: flatIntConstraints=6249
+%%%mzn-stat: evaluatedReifiedConstraints=2059
+%%%mzn-stat: evaluatedHalfReifiedConstraints=560
+%%%mzn-stat: method="minimize"
+%%%mzn-stat: flatTime=0.323918
+%%%mzn-stat-end
+%%%mzn-stat: objective=5995
+%%%mzn-stat: objectiveBound=3597
+%%%mzn-stat: nodes=5203
+%%%mzn-stat: solveTime=59.6771
+%%%mzn-stat-end
+end = 55
+carga_por_operario = [54, 54]
+desbalance = 0
+Job 1:   0(op:1)   1(op:1)   4(op:1)  14(op:2)  30(op:1)
+Job 2:  35(op:2)  36(op:2)  45(op:1)  47(op:1)  54(op:2)
+Job 3:  21(op:2)  29(op:2)  35(op:1)  37(op:1)  48(op:2)
+Job 4:   1(op:2)   8(op:2)  12(op:1)  26(op:2)  42(op:2)
+Job 5:   9(op:2)  15(op:1)  17(op:1)  21(op:1)  23(op:1)
+----------
+%%%mzn-stat: objective=5995
+%%%mzn-stat: objectiveBound=3597
+%%%mzn-stat: nodes=5203
+%%%mzn-stat: solveTime=59.6771
+%%%mzn-stat-end
+%%%mzn-stat: nSolutions=1
+%%%mzn-stat-end

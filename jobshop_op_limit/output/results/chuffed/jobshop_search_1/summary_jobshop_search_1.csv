@@ -1,0 +1,2 @@
+solver,model,data,end,desbalance,carga_por_operario,time_ms,nodes,failures,propagations
+chuffed,jobshop_search_1,data00,32,1,"[29, 29, 28]",40793,1221894,1156773,502766040
