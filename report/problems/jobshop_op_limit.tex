@@ -246,7 +246,7 @@ Comparando las 3 estrategias implementadas (ver Tabla \ref{tab:gecode_estrategia
     
     \item \textbf{Decidir operarios primero es contraproducente:} Estrategia 3 produce resultados id\'enticos a Estrategia 1 pero con 42\% m\'as nodos antes de agotar tiempo. El orden temporal debe decidirse antes que asignaciones de recursos.
     
-    \item \textbf{Limitaci\'on de portabilidad:} \texttt{seq\_search} solo funciona en Gecode, imposibilitando aplicar Estrategia 2 a HiGHS para verificar si mejora a\'un m\'as sus ya excelentes resultados.
+    \item \textbf{Limitaci\'on de portabilidad:} \texttt{seq\_search} aunque funciona en Gecode, no se puede aplicar Estrategia 2 a HiGHS para verificar si mejora a\'un m\'as sus ya excelentes resultados.
 \end{enumerate}
 
 \textbf{Recomendaci\'on:} Usar HiGHS sin anotaciones para este tipo de problemas. Si se requiere Gecode, aplicar Estrategia 2 (\texttt{dom\_w\_deg}).
