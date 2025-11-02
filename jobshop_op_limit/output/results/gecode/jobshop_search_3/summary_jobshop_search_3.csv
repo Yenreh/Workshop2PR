@@ -1,0 +1,12 @@
+solver,model,data,end,desbalance,carga_por_operario,time_ms,nodes,failures,propagations
+gecode,jobshop_search_3,data00,86,86,"[86, 0, 0]",NA,10717053,5358504,1146528186
+gecode,jobshop_search_3,data01,108,108,"[108, 0]",NA,15223333,7611644,1026296393
+gecode,jobshop_search_3,data02,112,112,"[112, 0, 0]",NA,11312284,5656120,1085806822
+gecode,jobshop_search_3,data03,120,120,"[120, 0, 0, 0]",NA,12804492,6402224,1098461046
+gecode,jobshop_search_3,data04,118,118,"[118, 0]",NA,13626036,6812990,995898055
+gecode,jobshop_search_3,data05,120,120,"[120, 0, 0]",NA,16699548,8349745,1152613520
+gecode,jobshop_search_3,data06,138,138,"[138, 0, 0, 0]",NA,15456023,7727984,1066657338
+gecode,jobshop_search_3,data07,162,162,"[162, 0]",NA,9797646,4898789,942471122
+gecode,jobshop_search_3,data08,155,155,"[155, 0, 0]",NA,8666460,4333197,958498638
+gecode,jobshop_search_3,data09,175,175,"[175, 0, 0]",NA,8088673,4044299,817757449
+gecode,jobshop_search_3,data10,187,187,"[187, 0, 0, 0]",NA,8660372,4330147,621775327

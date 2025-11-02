@@ -61,7 +61,7 @@ else
 fi
 
 # 2) Solvers disponibles
-ALL_SOLVERS=("chuffed" "gecode" "highs")
+ALL_SOLVERS=("chuffed" "gecode" "highs" "coin-bc")
 
 # 3) Límite de tiempo por corrida (ms)
 TIME_LIMIT_MS=60000

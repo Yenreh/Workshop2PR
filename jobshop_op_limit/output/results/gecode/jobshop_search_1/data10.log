@@ -1,0 +1,37 @@
+% Generated FlatZinc statistics:
+%%%mzn-stat: paths=0
+%%%mzn-stat: flatBoolVars=2480
+%%%mzn-stat: flatIntVars=245
+%%%mzn-stat: flatBoolConstraints=776
+%%%mzn-stat: flatIntConstraints=2693
+%%%mzn-stat: evaluatedReifiedConstraints=158
+%%%mzn-stat: evaluatedHalfReifiedConstraints=2322
+%%%mzn-stat: eliminatedLinearConstraints=1
+%%%mzn-stat: method="minimize"
+%%%mzn-stat: flatTime=0.119715
+%%%mzn-stat-end
+end = 187
+carga_por_operario = [187, 0, 0, 0]
+desbalance = 187
+Job 1: 163(op:1) 167(op:1) 168(op:1) 169(op:1) 177(op:1)
+Job 2:  57(op:1)  62(op:1)  64(op:1)  66(op:1)  73(op:1)
+Job 3: 147(op:1) 154(op:1) 157(op:1) 158(op:1) 181(op:1)
+Job 4: 125(op:1) 127(op:1) 133(op:1) 134(op:1) 139(op:1)
+Job 5:   0(op:1)   8(op:1)  16(op:1)  20(op:1)  28(op:1)
+Job 6: 103(op:1) 106(op:1) 111(op:1) 116(op:1) 118(op:1)
+Job 7:  81(op:1)  84(op:1)  91(op:1)  98(op:1) 101(op:1)
+Job 8:  32(op:1)  38(op:1)  40(op:1)  44(op:1)  50(op:1)
+----------
+%%%mzn-stat: initTime=0.0119209
+%%%mzn-stat: solveTime=59.8802
+%%%mzn-stat: solutions=1
+%%%mzn-stat: variables=2726
+%%%mzn-stat: propagators=3469
+%%%mzn-stat: propagations=750849628
+%%%mzn-stat: nodes=7500955
+%%%mzn-stat: failures=3750452
+%%%mzn-stat: restarts=0
+%%%mzn-stat: peakDepth=86
+%%%mzn-stat-end
+%%%mzn-stat: nSolutions=1
+%%%mzn-stat-end
