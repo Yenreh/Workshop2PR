@@ -161,7 +161,13 @@ data10 & 187 & 187 & 187 & 1 & 69 & 14 \\
 \label{tab:est1_solvers}
 \end{table}
 
-\textbf{Observaciones:} Gecode: 100\% triviales. Chuffed: 27\% cr\'iticos. HiGHS: 0\% problem\'aticos, 45\% perfectos. \textbf{HiGHS claramente superior.}
+
+\begin{itemize}
+    \item \textbf{Gecode:} 100\% triviales, \textbf{todas las instancias alcanzaron el l\'imite de 60s} sin encontrar soluciones no triviales
+    \item \textbf{Chuffed:} 27\% cr\'iticos, \textbf{todas las instancias alcanzaron timeout} pero con mejores soluciones intermedias
+    \item \textbf{HiGHS:} 0\% problem\'aticos, 45\% perfectos, \textbf{ninguna instancia alcanz\'o timeout} (resoluci\'on completa)
+\end{itemize}
+\textbf{HiGHS claramente superior.}
 
 \paragraph{Estrategias 2 y 3 -- Solo Gecode}
 
@@ -193,12 +199,12 @@ data10 & 187 & 187 & 7.5 & 751 & 84 & 1 & 6.2 & 858 & 187 & 187 & 8.7 & 622 \\
 \label{tab:gecode_estrategias}
 \end{table}
 
-\textbf{Observaciones:}
+
 \begin{itemize}
-    \item \textbf{Est.1 vs Est.2:} \texttt{dom\_w\_deg} reduce makespan 55\% (134.6 $\rightarrow$ 61.1) y desbalance 99\% (134.6 $\rightarrow$ 1.5)
-    \item \textbf{Est.1 vs Est.3:} Calidad id\'entica, pero Est.3 usa 42\% m\'as nodos y 22\% m\'as propagaciones
-    \item \textbf{Est.2 eficiencia:} Mejor calidad con menos nodos promedio que Est.1 (5.4M vs 8.4M), pero alta varianza
-    \item \textbf{data03 notable:} Est.2 resuelve con solo 4K nodos (balanceo perfecto), vs 9M en Est.1
+    \item \textbf{Est.1 vs Est.2:} \texttt{dom\_w\_deg} reduce makespan 55\% (134.6 $\rightarrow$ 61.1) y desbalance 99\% (134.6 $\rightarrow$ 1.5). \textbf{Est.1 y Est.3 alcanzaron timeout en todas las instancias}, mientras que \textbf{Est.2 tambi\'en alcanz\'o timeout universal} pero encontrando soluciones dr\'asticamente mejores.
+    \item \textbf{Est.1 vs Est.3:} Calidad id\'entica (ambas triviales por timeout), pero Est.3 usa 42\% m\'as nodos y 22\% m\'as propagaciones antes de agotar tiempo.
+    \item \textbf{Est.2 eficiencia:} Mejor calidad con menos nodos promedio que Est.1 (5.4M vs 8.4M), pero alta variabilidad. A pesar del timeout, la heur\'istica adaptativa explora mejor el espacio de b\'usqueda.
+    \item \textbf{data03 notable:} Est.2 resuelve con solo 4K nodos (balanceo perfecto), vs 9M en Est.1. \'Unica instancia sin timeout en Est.2.
 \end{itemize}
 
 \subsection{An\'alisis Comparativo}
@@ -214,30 +220,31 @@ Comparando resultados de Estrategia 1 (libre) entre solvers:
     \item \textbf{Gecode Est.1:} Makespan 134.6, desbalance 134.6, ~8.4M nodos
 \end{itemize}
 
-\textbf{Conclusi\'on:} HiGHS sin anotaciones supera a Gecode con \texttt{dom\_w\_deg}, demostrando que heur\'isticas internas bien dise\~nadas eliminan necesidad de anotaciones expl\'icitas para las instacias probadas en este problema.
+\textbf{Conclusi\'on:} HiGHS sin anotaciones supera a Gecode con \texttt{dom\_w\_deg}, demostrando que heur\'isticas internas bien dise\~nadas eliminan necesidad de anotaciones expl\'icitas. Cabe destacar, que los resultados triviales de Gecode Est.1 se deben al agotamiento del l\'imite de tiempo (60s) sin encontrar soluciones mejores, mientras que HiGHS resuelve \'optimamente sin alcanzar el timeout.
 
 \subsubsection{Hallazgo 2: Impacto de Estrategias en Gecode}
 
 Comparando las 3 estrategias implementadas (ver Tabla \ref{tab:gecode_estrategias}):
 
-\textbf{Observaciones clave:}
+
 \begin{itemize}
-    \item \textbf{Est.1:} Makespan prom. 134.6, desbalance 134.6 (100\% triviales), 8.4M nodos
-    \item \textbf{Est.2:} Makespan prom. 61.1 (55\% mejor), desbalance 1.5 (99\% mejor), 5.4M nodos
-    \item \textbf{Est.3:} Makespan prom. 134.6 (id\'entico a Est.1), 11.9M nodos (42\% peor eficiencia)
-    \item \textbf{Est.2 eficiencia variable:} data03 con 4K nodos vs data00 con 11M nodos (alta dependencia de estructura)
+    \item \textbf{Est.1:} Makespan prom. 134.6, desbalance 134.6 (100\% triviales), 8.4M nodos, \textbf{timeout en todas las instancias}
+    \item \textbf{Est.2:} Makespan prom. 61.1 (55\% mejor), desbalance 1.5 (99\% mejor), 5.4M nodos, \textbf{timeout en 10/11 instancias} (solo data03 termin\'o antes)
+    \item \textbf{Est.3:} Makespan prom. 134.6 (id\'entico a Est.1), 11.9M nodos (42\% peor eficiencia), \textbf{timeout en todas las instancias}
+    \item \textbf{Est.2 eficiencia variable:} data03 con 4K nodos (\'unica sin timeout) vs data00 con 11M nodos (alta dependencia de estructura)
+    \item \textbf{Timeout universal en Gecode:} Las 3 estrategias agotan el l\'imite de 60s en la mayor\'ia de instancias, pero Est.2 encuentra mejores soluciones intermedias gracias a \texttt{dom\_w\_deg}
 \end{itemize}
 
 \subsection{Conclusiones}
 
 \begin{enumerate}
-    \item \textbf{HiGHS es el mejor solver para este problema:} Sin anotaciones de b\'usqueda, logra makespan promedio 56.7 (58\% mejor que Gecode sin anotaciones, 7\% mejor que Gecode con \texttt{dom\_w\_deg}), desbalance m\'aximo 14, y solo ~2.5K nodos. Sus heur\'isticas internas son superiores.
+    \item \textbf{HiGHS es el mejor solver para este problema:} Sin anotaciones de b\'usqueda, logra makespan promedio 56.7 (58\% mejor que Gecode sin anotaciones, 7\% mejor que Gecode con \texttt{dom\_w\_deg}), desbalance m\'aximo 14, y solo ~2.5K nodos. \textbf{Ninguna instancia alcanz\'o el l\'imite de 60s,} indicando resoluci\'on completa. Sus heur\'isticas internas son superiores.
     
-    \item \textbf{Las heur\'isticas por defecto var\'ian dr\'asticamente:} Gecode produce soluciones triviales (100\% casos), Chuffed tiene 27\% casos cr\'iticos, HiGHS 0\% casos problem\'aticos. La elecci\'on del solver es tan importante como la estrategia de b\'usqueda.
+    \item \textbf{Las heur\'isticas por defecto var\'ian dr\'asticamente:} Gecode produce soluciones triviales (100\% casos) \textbf{agotando el timeout en todas las instancias}, Chuffed tiene 27\% casos cr\'iticos \textbf{tambi\'en con timeout universal}, HiGHS 0\% casos problem\'aticos \textbf{sin alcanzar timeout}. La elecci\'on del solver es tan importante como la estrategia de b\'usqueda.
     
-    \item \textbf{Anotaciones expl\'icitas necesarias en Gecode:} \texttt{dom\_w\_deg} mejora Gecode 55\% (makespan 134.6 $\rightarrow$ 61.1), pero a\'un queda 8\% por debajo de HiGHS sin anotaciones. Las heur\'isticas adaptativas son efectivas pero no compensan totalmente deficiencias del solver base.
+    \item \textbf{Anotaciones expl\'icitas necesarias en Gecode:} \texttt{dom\_w\_deg} mejora Gecode 55\% (makespan 134.6 $\rightarrow$ 61.1), pero a\'un queda 8\% por debajo de HiGHS sin anotaciones. \textbf{A pesar de alcanzar timeout en 10/11 instancias,} las heur\'isticas adaptativas encuentran mejores soluciones intermedias, aunque no compensan totalmente deficiencias del solver base.
     
-    \item \textbf{Decidir operarios primero es contraproducente:} Estrategia 3 produce resultados id\'enticos a Estrategia 1 pero con 42\% m\'as nodos. El orden temporal debe decidirse antes que asignaciones de recursos.
+    \item \textbf{Decidir operarios primero es contraproducente:} Estrategia 3 produce resultados id\'enticos a Estrategia 1 pero con 42\% m\'as nodos antes de agotar tiempo. El orden temporal debe decidirse antes que asignaciones de recursos.
     
     \item \textbf{Limitaci\'on de portabilidad:} \texttt{seq\_search} solo funciona en Gecode, imposibilitando aplicar Estrategia 2 a HiGHS para verificar si mejora a\'un m\'as sus ya excelentes resultados.
 \end{enumerate}
