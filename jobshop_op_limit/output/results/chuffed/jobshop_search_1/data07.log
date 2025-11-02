@@ -9,3 +9,76 @@
 %%%mzn-stat: flatTime=0.108613
 %%%mzn-stat-end
 WARNING: the --time-out flag has recently been changed.The time-out is now provided in milliseconds instead of seconds
+% Pruned 49995 learnt clauses
+% Pruned 49995 learnt clauses
+% Pruned 49994 learnt clauses
+% Pruned 49993 learnt clauses
+% Pruned 49992 learnt clauses
+% Pruned 49990 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49997 learnt clauses
+%%%mzn-stat: nodes=2001615
+%%%mzn-stat: failures=1997736
+%%%mzn-stat: restarts=32
+%%%mzn-stat: variables=17119
+%%%mzn-stat: intVars=215
+%%%mzn-stat: boolVariables=16902
+%%%mzn-stat: propagators=4304
+%%%mzn-stat: propagations=3457034089
+%%%mzn-stat: peakDepth=117
+%%%mzn-stat: nogoods=1997736
+%%%mzn-stat: backjumps=945
+%%%mzn-stat: peakMem=0.00
+%%%mzn-stat: time=59.908
+%%%mzn-stat: initTime=0.017
+%%%mzn-stat: solveTime=59.891
+%%%mzn-stat: objective=22820
+%%%mzn-stat: optTime=10.792
+%%%mzn-stat: baseMem=0.00
+%%%mzn-stat: trailMem=0.28
+%%%mzn-stat: randomSeed=1
+%%%mzn-stat-end
+end = 140
+carga_por_operario = [81, 81]
+desbalance = 0
+Job 1:  84(op:1)  89(op:1)  97(op:1) 101(op:1) 103(op:1)
+Job 2:  17(op:1)  66(op:2)  85(op:2)  91(op:2) 110(op:2)
+Job 3:  41(op:1)  48(op:1) 106(op:2) 132(op:2) 134(op:2)
+Job 4:  27(op:2)  42(op:2)  73(op:1)  95(op:2) 130(op:2)
+Job 5:  12(op:1)  61(op:1)  80(op:1) 122(op:2) 129(op:2)
+Job 6:  63(op:2)  74(op:2) 119(op:1) 129(op:1) 132(op:1)
+Job 7:  77(op:2)  79(op:2) 101(op:2) 108(op:1) 114(op:2)
+----------
+% Time limit exceeded!
+%%%mzn-stat: nSolutions=1
+%%%mzn-stat-end

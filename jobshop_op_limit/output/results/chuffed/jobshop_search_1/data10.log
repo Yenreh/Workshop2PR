@@ -1,0 +1,72 @@
+% Generated FlatZinc statistics:
+%%%mzn-stat: paths=0
+%%%mzn-stat: flatBoolVars=2487
+%%%mzn-stat: flatIntVars=249
+%%%mzn-stat: flatBoolConstraints=896
+%%%mzn-stat: flatIntConstraints=2703
+%%%mzn-stat: evaluatedReifiedConstraints=2488
+%%%mzn-stat: eliminatedLinearConstraints=1
+%%%mzn-stat: method="minimize"
+%%%mzn-stat: flatTime=0.123758
+%%%mzn-stat-end
+WARNING: the --time-out flag has recently been changed.The time-out is now provided in milliseconds instead of seconds
+% Pruned 49998 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49995 learnt clauses
+% Pruned 49994 learnt clauses
+% Pruned 49993 learnt clauses
+% Pruned 49995 learnt clauses
+% Pruned 49994 learnt clauses
+% Pruned 49993 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49997 learnt clauses
+%%%mzn-stat: nodes=1301886
+%%%mzn-stat: failures=1257703
+%%%mzn-stat: restarts=1
+%%%mzn-stat: variables=23773
+%%%mzn-stat: intVars=331
+%%%mzn-stat: boolVariables=23440
+%%%mzn-stat: propagators=5670
+%%%mzn-stat: propagations=1744945320
+%%%mzn-stat: peakDepth=192
+%%%mzn-stat: nogoods=1257703
+%%%mzn-stat: backjumps=43968
+%%%mzn-stat: peakMem=0.00
+%%%mzn-stat: time=59.900
+%%%mzn-stat: initTime=0.024
+%%%mzn-stat: solveTime=59.876
+%%%mzn-stat: objective=35157
+%%%mzn-stat: optTime=0.239
+%%%mzn-stat: baseMem=0.00
+%%%mzn-stat: trailMem=0.42
+%%%mzn-stat: randomSeed=1
+%%%mzn-stat-end
+end = 187
+carga_por_operario = [47, 47, 47, 46]
+desbalance = 1
+Job 1: 125(op:1) 135(op:1) 164(op:1) 175(op:2) 183(op:1)
+Job 2:  88(op:2)  93(op:1)  95(op:1)  97(op:4) 112(op:4)
+Job 3: 153(op:3) 160(op:1) 163(op:1) 164(op:3) 170(op:4)
+Job 4: 148(op:1) 150(op:4) 156(op:4) 157(op:2) 162(op:2)
+Job 5: 104(op:4) 112(op:3) 121(op:1) 134(op:3) 144(op:1)
+Job 6: 117(op:1) 120(op:4) 125(op:4) 130(op:1) 132(op:2)
+Job 7: 136(op:1) 139(op:2) 146(op:2) 153(op:1) 156(op:1)
+Job 8: 142(op:3) 158(op:1) 165(op:1) 169(op:3) 176(op:3)
+----------
+% Time limit exceeded!
+%%%mzn-stat: nSolutions=1
+%%%mzn-stat-end
