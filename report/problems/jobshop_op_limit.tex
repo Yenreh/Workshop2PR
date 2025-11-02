@@ -2,353 +2,116 @@
 
 \subsection{Descripci\'on del Problema}
 
-En esta variaci\'on del Job Shop Scheduling Problem, se introduce la restricci\'on de que hay un n\'umero limitado de operarios especializados disponibles. Aunque cada operaci\'on requiere ejecutarse en una m\'aquina espec\'ifica, tambi\'en requiere la presencia de un operario para supervisarla u operarla. Como hay menos operarios que m\'aquinas, no todas las m\'aquinas pueden funcionar simult\'aneamente, lo que a\~nade una nueva dimensi\'on de complejidad al problema.
+Esta variaci\'on del JSSP incorpora un n\'umero limitado $k$ de operarios especializados. Cada operaci\'on requiere ejecutarse en una m\'aquina espec\'ifica \textit{y} la supervisi\'on de un operario, quien no puede atender m\'ultiples operaciones simult\'aneamente. Esto limita el paralelismo del sistema a\'un con m\'aquinas disponibles.
 
-\textbf{Contexto industrial:} En entornos de producci\'on modernos, aunque las m\'aquinas puedan ser numerosas y especializadas, el personal calificado para operarlas es un recurso limitado y costoso. La planificaci\'on eficiente debe considerar tanto la disponibilidad de m\'aquinas como de operarios, buscando adem\'as balancear la carga de trabajo para evitar cuellos de botella y fatiga.
-
-\textbf{Elementos del problema:}
+\textbf{Elementos adicionales al JSSP cl\'asico:}
 \begin{itemize}
-    \item Un conjunto de \textit{jobs} con sus respectivas secuencias de \textit{tasks}
-    \item Cada operaci\'on tiene duraci\'on fija y m\'aquina asignada
-    \item Restricciones de precedencia dentro de cada trabajo
-    \item Cada m\'aquina procesa una operaci\'on a la vez
-    \item \textbf{Nuevo:} Solo hay $k$ operarios disponibles (donde $k <$ n\'umero de tareas concurrentes potenciales)
-    \item \textbf{Nuevo:} Cada operaci\'on debe ser asignada a exactamente un operario
-    \item \textbf{Nuevo:} Un operario no puede estar en dos operaciones simult\'aneas
-    \item \textbf{Objetivos duales:}
-    \begin{enumerate}
-        \item Minimizar el makespan (tiempo total)
-        \item Balancear la carga de trabajo entre operarios
-    \end{enumerate}
+    \item $k$ operarios disponibles ($k <$ potencial de tareas simult\'aneas)
+    \item Asignaci\'on obligatoria de operario por operaci\'on
+    \item Restricci\'on de exclusividad temporal del operario
+    \item \textbf{Objetivo dual:} Minimizar makespan y balancear carga entre operarios
 \end{itemize}
 
 \subsection{Modelamiento como CSP}
 
-\subsubsection{Par\'ametros del Modelo}
+\subsubsection{Par\'ametros y Variables}
 
-Los par\'ametros definen la instancia del problema:
+\textbf{Par\'ametros:} \texttt{jobs}, \texttt{tasks}, \texttt{k} (operarios), \texttt{d[JOB,TASK]} (duraciones).
 
+\textbf{Variables principales:}
 \begin{itemize}
-    \item \textbf{jobs} (\texttt{int}): N\'umero de trabajos a planificar
-    \item \textbf{tasks} (\texttt{int}): N\'umero de operaciones por trabajo (asumiendo estructura uniforme)
-    \item \textbf{k} (\texttt{int}): N\'umero de operarios disponibles
-    \item \textbf{d} (\texttt{array[JOB, TASK] of int}): Matriz de duraciones, donde $d[i,j]$ es la duraci\'on de la tarea $j$ del trabajo $i$
+    \item \texttt{s[JOB,TASK]}: Tiempos de inicio de cada operaci\'on
+    \item \texttt{o[JOB,TASK]}: Asignaci\'on de operario a cada operaci\'on
+    \item \texttt{end}: Makespan (tiempo total)
+    \item \texttt{carga[OP]}: Carga de trabajo por operario (para balanceo)
+    \item \texttt{used[OP]}: Indicador de operarios utilizados (ruptura de simetr\'ias)
 \end{itemize}
 
-Adicionalmente se definen conjuntos para facilitar la iteraci\'on:
-\begin{itemize}
-    \item \textbf{JOB} = $\{1, \ldots, \text{jobs}\}$
-    \item \textbf{TASK} = $\{1, \ldots, \text{tasks}\}$
-    \item \textbf{OP} = $\{1, \ldots, k\}$: Conjunto de operarios
-\end{itemize}
+\subsubsection{Restricciones Principales}
 
-\textbf{Justificaci\'on:} Esta estructura permite modelar problemas de tama\~no variable manteniendo la claridad del modelo. La suposici\'on de estructura uniforme (mismo n\'umero de tareas por trabajo) simplifica el modelo sin perder generalidad significativa.
-
-\subsubsection{Variables de Decisi\'on}
-
-El modelo define las siguientes variables de decisi\'on:
-
+\textbf{Job Shop cl\'asico:}
 \begin{enumerate}
-    \item \textbf{s} (\texttt{array[JOB, TASK] of var 0..total}): 
-    \begin{itemize}
-        \item $s[i,j]$ representa el tiempo de inicio de la tarea $j$ del trabajo $i$
-        \item Dominio: $[0, \text{total}]$ donde $\text{total} = \sum_{i,j} d[i,j]$ (cota superior trivial)
-        \item Esta es la variable principal que determina el cronograma
-    \end{itemize}
-    
-    \item \textbf{o} (\texttt{array[JOB, TASK] of var OP}): 
-    \begin{itemize}
-        \item $o[i,j]$ representa qu\'e operario es asignado a la tarea $j$ del trabajo $i$
-        \item Dominio: $\{1, \ldots, k\}$ (identificadores de operarios)
-        \item Esta variable conecta las restricciones de capacidad de operarios con el cronograma
-    \end{itemize}
-    
-    \item \textbf{end} (\texttt{var 0..total}):
-    \begin{itemize}
-        \item Representa el tiempo de finalizaci\'on del \'ultimo trabajo (makespan)
-        \item Variable objetivo principal
-    \end{itemize}
-    
-    \item \textbf{used} (\texttt{array[OP] of var bool}):
-    \begin{itemize}
-        \item $\text{used}[p]$ es verdadero si y solo si el operario $p$ es asignado a al menos una tarea
-        \item Variable auxiliar para romper simetr\'ias
-    \end{itemize}
-    
-    \item \textbf{carga} (\texttt{array[OP] of var 0..total}):
-    \begin{itemize}
-        \item $\text{carga}[p]$ representa la carga total de trabajo asignada al operario $p$
-        \item Suma de duraciones de todas las tareas asignadas a ese operario
-        \item Variable derivada para el objetivo de balanceo
-    \end{itemize}
+    \item Precedencia: $s[i,j] + d[i,j] \leq s[i,j+1]$ (secuencialidad dentro de cada trabajo)
+    \item Capacidad de m\'aquinas: \texttt{disjunctive} por cada tarea (no solapamiento)
+    \item Makespan: $s[i,\text{tasks}] + d[i,\text{tasks}] \leq \text{end}$
 \end{enumerate}
 
-\textbf{Justificaci\'on del modelamiento:} La elecci\'on de representar tanto tiempos de inicio como asignaciones de operarios como variables permite al solver explorar ambas dimensiones simult\'aneamente, facilitando la propagaci\'on de restricciones. Las variables auxiliares (\texttt{used}, \texttt{carga}) son t\'ecnicamente redundantes pero esenciales para expresar restricciones de simetr\'ia y objetivos de balanceo de forma clara y eficiente.
+\textbf{Operarios limitados:}
+\begin{enumerate}
+    \setcounter{enumi}{3}
+    \item No solapamiento: Si $o[i_1,j_1] = o[i_2,j_2]$ entonces intervalos temporales disjuntos
+    \item Carga: $\text{carga}[p] = \sum d[i,j] \cdot \mathbb{1}_{o[i,j] = p}$
+\end{enumerate}
 
-\subsubsection{Restricciones}
+\textbf{Ruptura de simetr\'ias:}
+\begin{enumerate}
+    \setcounter{enumi}{5}
+    \item Uso consecutivo: $\text{used}[p] \implies \text{used}[p-1]$
+    \item Anclaje: $o[1,1] = 1$
+    \item Ordenamiento: $\text{carga}[p] \geq \text{carga}[p+1]$
+\end{enumerate}
 
-\paragraph{Restricciones del Job Shop Cl\'asico}
+\textbf{Redundante (poda eficiente):}
+\begin{enumerate}
+    \setcounter{enumi}{8}
+    \item \texttt{cumulative}$(S, D, [1,\ldots,1], k)$: A lo sumo $k$ tareas simult\'aneas. Redundante l\'ogicamente pero mejora propagaci\'on dr\'asticamente.
+\end{enumerate}
 
-\textbf{1. Precedencia dentro de cada trabajo:}
-\begin{equation}
-\forall i \in \text{JOB}, \forall j \in \{1, \ldots, \text{tasks}-1\}: s[i,j] + d[i,j] \leq s[i,j+1]
-\end{equation}
+\subsection{Detalles de Implementaci\'on}
 
-\textit{Interpretaci\'on:} La tarea $j+1$ del trabajo $i$ no puede comenzar hasta que la tarea $j$ haya terminado. Esto captura la dependencia secuencial de operaciones dentro de un trabajo.
-
-\textbf{2. Capacidad de m\'aquinas (una operaci\'on por tarea a la vez):}
-\begin{equation}
-\forall j \in \text{TASK}: \text{disjunctive}([s[i,j] \mid i \in \text{JOB}], [d[i,j] \mid i \in \text{JOB}])
-\end{equation}
-
-\textit{Interpretaci\'on:} Para cada \'indice de tarea $j$ (que corresponde a una m\'aquina en el modelo cl\'asico), todas las operaciones que usan esa m\'aquina deben ejecutarse sin solapamiento temporal. La restricci\'on global \texttt{disjunctive} asegura que los intervalos $[s[i,j], s[i,j] + d[i,j])$ sean disjuntos.
-
-\textbf{3. Definici\'on del makespan:}
-\begin{equation}
-\forall i \in \text{JOB}: s[i, \text{tasks}] + d[i, \text{tasks}] \leq \text{end}
-\end{equation}
-
-\textit{Interpretaci\'on:} El makespan debe ser al menos el tiempo de finalizaci\'on del \'ultimo trabajo completado.
-
-\paragraph{Restricciones de Operarios}
-
-\textbf{4. No solapamiento de operarios:}
-\begin{equation}
-\begin{aligned}
-\forall (i_1, j_1), (i_2, j_2) \in \text{JOB} \times \text{TASK} \text{ con } (i_1,j_1) < (i_2,j_2): \\
-o[i_1,j_1] = o[i_2,j_2] \implies \\
-(s[i_1,j_1] + d[i_1,j_1] \leq s[i_2,j_2] \lor s[i_2,j_2] + d[i_2,j_2] \leq s[i_1,j_1])
-\end{aligned}
-\end{equation}
-
-\textit{Interpretaci\'on:} Si dos tareas son asignadas al mismo operario, sus intervalos temporales no pueden solaparse. Esta es la restricci\'on fundamental que limita el paralelismo en el sistema.
-
-\textbf{Nota t\'ecnica:} La condici\'on $(i_1,j_1) < (i_2,j_2)$ (orden lexicogr\'afico) evita comparar cada par dos veces y la auto-comparaci\'on.
-
-\textbf{5. Definici\'on de carga por operario:}
-\begin{equation}
-\forall p \in \text{OP}: \text{carga}[p] = \sum_{i \in \text{JOB}, j \in \text{TASK}} d[i,j] \cdot \mathbb{1}_{o[i,j] = p}
-\end{equation}
-
-donde $\mathbb{1}_{o[i,j] = p}$ es 1 si $o[i,j] = p$, y 0 en caso contrario.
-
-\textit{Interpretaci\'on:} La carga de cada operario es la suma de duraciones de todas las tareas que se le asignan.
-
-\paragraph{Ruptura de Simetr\'ias}
-
-\textbf{6. Uso consecutivo de operarios:}
-\begin{equation}
-\begin{aligned}
-&\forall p \in \text{OP}: \text{used}[p] \iff \exists (i,j) \in \text{JOB} \times \text{TASK}: o[i,j] = p \\
-&\forall p \in \{2, \ldots, k\}: \text{used}[p] \implies \text{used}[p-1]
-\end{aligned}
-\end{equation}
-
-\textit{Interpretaci\'on:} Forzamos que los operarios se usen consecutivamente (1, 2, 3, ...), eliminando simetr\'ias por permutaci\'on de operarios id\'enticos.
-
-\textbf{7. Anclaje del primer operario:}
-\begin{equation}
-o[1,1] = 1
-\end{equation}
-
-\textit{Interpretaci\'on:} La primera tarea del primer trabajo siempre usa el operario 1, eliminando rotaciones del conjunto de operarios.
-
-\textbf{8. Ordenamiento de cargas:}
-\begin{equation}
-\forall p \in \{1, \ldots, k-1\}: \text{carga}[p] \geq \text{carga}[p+1]
-\end{equation}
-
-\textit{Interpretaci\'on:} Las cargas se ordenan de mayor a menor, eliminando permutaciones de operarios con cargas id\'enticas. Esta restricci\'on es compatible con el objetivo de balanceo.
-
-\paragraph{Restricci\'on Redundante}
-
-\textbf{9. Restricci\'on cumulative (poda de dominios):}
-\begin{equation}
-\text{cumulative}(S_{\text{all}}, D_{\text{all}}, R_{\text{all}}, k)
-\end{equation}
-
-donde:
+\textbf{Aspectos clave:}
 \begin{itemize}
-    \item $S_{\text{all}} = [s[i,j] \mid i \in \text{JOB}, j \in \text{TASK}]$: vector de tiempos de inicio
-    \item $D_{\text{all}} = [d[i,j] \mid i \in \text{JOB}, j \in \text{TASK}]$: vector de duraciones
-    \item $R_{\text{all}} = [1 \mid i \in \text{JOB}, j \in \text{TASK}]$: cada tarea requiere 1 recurso
-    \item $k$: capacidad m\'axima del recurso
+    \item Uso de restricciones globales (\texttt{disjunctive}, \texttt{cumulative}) para propagaci\'on eficiente
+    \item Formulaci\'on expl\'icita para no-solapamiento de operarios (condicional a asignaci\'on)
+    \item Variables derivadas (\texttt{maxload}, \texttt{minload}) para objetivo de balanceo
+    \item Funci\'on objetivo: $W \cdot \text{end} + (\text{maxload} - \text{minload})$ con $W = \text{total} + 1$
 \end{itemize}
 
-\textit{Interpretaci\'on:} En cualquier momento, a lo sumo $k$ tareas pueden estar ejecut\'andose simult\'aneamente (porque solo hay $k$ operarios). Esta restricci\'on es \textbf{redundante} porque se deriva l\'ogicamente de la restricci\'on 4, pero la restricci\'on global \texttt{cumulative} implementa algoritmos de propagaci\'on especializados que podan el espacio de b\'usqueda m\'as eficientemente.
+\subsection{Estrategias de B\'usqueda Implementadas}
 
-\textbf{¿Por qu\'e es \'util esta redundancia?} 
-\begin{itemize}
-    \item La restricci\'on 4 propaga cuando dos tareas comparten operario
-    \item La restricci\'on \texttt{cumulative} propaga globalmente sobre todas las tareas simult\'aneas
-    \item En la pr\'actica, reduce dr\'asticamente los nodos explorados
-\end{itemize}
+Se implementaron tres estrategias para evaluar su impacto en calidad de soluci\'on y eficiencia:
 
-\subsection{Detalles de Implementaci\'on en MiniZinc}
-
-\subsubsection{Aspectos Relevantes de la Implementaci\'on}
-
-\textbf{1. Uso de restricciones globales:}
-\begin{lstlisting}[language=minizinc]
-constraint forall(j in TASK) (
-  disjunctive([s[i,j] | i in JOB], [d[i,j] | i in JOB])
-);
+\begin{enumerate}
+    \item \textbf{Estrategia 1 -- B\'usqueda Libre:} Sin anotaciones expl\'icitas, usa heur\'isticas por defecto del solver. Probada con Gecode, Chuffed y HiGHS para comparar comportamiento entre solvers.
+    
+    \item \textbf{Estrategia 2 -- \texttt{dom\_w\_deg} para tiempos:} 
+    \begin{lstlisting}[language=minizinc]
+solve :: seq_search([
+  int_search([s[i,j] | ...], dom_w_deg, indomain_min),
+  int_search([o[i,j] | ...], first_fail, indomain_min)
+]) minimize W * end + (maxload - minload);
 \end{lstlisting}
+    Decide tiempos con heur\'istica adaptativa (\texttt{dom\_w\_deg}), luego operarios con \texttt{first\_fail}. Probada solo con Gecode.
+    
+    \item \textbf{Estrategia 3 -- Operarios primero:} Decide operarios antes que tiempos, ambos con \texttt{first\_fail}. Hip\'otesis: agrupar por operario facilita scheduling. Probada solo con Gecode.
+\end{enumerate}
 
-La restricci\'on global \texttt{disjunctive} es mucho m\'as eficiente que descomponer manualmente en disyunciones. Implementa algoritmos especializados de propagaci\'on para scheduling.
+\subsection{Configuraci\'on de Pruebas}
 
-\textbf{2. Restricciones de no-solapamiento de operarios:}
+Las pruebas fueron ejecutadas mediante el script \texttt{run\_jobshop\_tests.sh} bajo las siguientes condiciones:
 
-Se opt\'o por una formulaci\'on expl\'icita con implicaci\'on en lugar de usar \texttt{disjunctive} para operarios porque:
+\textbf{Par\'ametros del script:}
 \begin{itemize}
-    \item La asignaci\'on de operarios es una variable de decisi\'on
-    \item El no-solapamiento es condicional (solo si comparten operario)
-    \item Permite mayor control sobre la propagaci\'on
-\end{itemize}
-
-\textbf{3. Variables auxiliares para balanceo:}
-
-Las variables \texttt{maxload} y \texttt{minload} se definen como:
-\begin{lstlisting}[language=minizinc]
-var 0..total: maxload = max(p in OP)(carga[p]);
-var 0..total: minload = min(p in OP)(carga[p]);
-\end{lstlisting}
-
-Estas son variables derivadas pero el solver las trata eficientemente gracias a las optimizaciones de MiniZinc.
-
-\textbf{4. Cota superior opcional:}
-
-El modelo incluye un par\'ametro \texttt{ub\_end} que permite especificar una cota superior conocida para el makespan, facilitando la prueba de instancias espec\'ificas o la comparaci\'on con soluciones conocidas.
-
-\subsection{Estrategias de B\'usqueda}
-
-Se implementaron tres estrategias de b\'usqueda diferentes para evaluar su impacto en el rendimiento:
-
-\subsubsection{Estrategia 1: B\'usqueda Libre}
-
-\begin{lstlisting}[language=minizinc]
-solve minimize W * end + (maxload - minload);
-\end{lstlisting}
-
-\textbf{Caracter\'isticas:}
-\begin{itemize}
-    \item No se especifica una anotaci\'on de b\'usqueda expl\'icita
-    \item El solver (Gecode) usa sus heur\'isticas por defecto
-    \item T\'ipicamente explora variables en orden de declaraci\'on con seleccci\'on de valor por defecto
-\end{itemize}
-
-\textbf{Funci\'on objetivo:} $W \cdot \text{end} + (\text{maxload} - \text{minload})$
-
-donde $W = \text{total} + 1$ es un peso grande que prioriza makespan sobre balanceo.
-
-\textbf{Ventajas esperadas:} Simplicidad, sin necesidad de ajustar par\'ametros.
-
-\textbf{Desventajas esperadas:} Puede explorar variables en orden subóptimo, llevando a mayor n\'umero de nodos.
-
-\subsubsection{Estrategia 2: B\'usqueda Secuencial con dom\_w\_deg}
-
-\begin{lstlisting}[language=minizinc]
-solve
-:: seq_search([
-     int_search([s[i,j] | i in JOB, j in TASK], 
-                dom_w_deg, indomain_min),
-     int_search([o[i,j] | i in JOB, j in TASK], 
-                first_fail, indomain_min)
-   ])
-minimize W * end + (maxload - minload);
-\end{lstlisting}
-
-\textbf{Caracter\'isticas:}
-\begin{itemize}
-    \item \textbf{Fase 1:} Decide tiempos de inicio (\texttt{s}) usando \texttt{dom\_w\_deg}
-    \begin{itemize}
-        \item \texttt{dom\_w\_deg}: Selecciona la variable con mayor ratio de peso-de-restricciones / tama\~no-de-dominio
-        \item ``Peso'' se incrementa cuando una restricci\'on falla
-        \item Prioriza variables que han causado conflictos recientemente
-        \item \texttt{indomain\_min}: Prueba el valor m\'inimo del dominio primero
-    \end{itemize}
-    \item \textbf{Fase 2:} Decide asignaciones de operarios (\texttt{o}) usando \texttt{first\_fail}
-    \begin{itemize}
-        \item \texttt{first\_fail}: Selecciona la variable con el dominio m\'as peque\~no
-        \item Ataca primero las decisiones m\'as restringidas
-    \end{itemize}
-\end{itemize}
-
-\textbf{Justificaci\'on:}
-\begin{itemize}
-    \item Los tiempos de inicio son m\'as cr\'iticos para el makespan
-    \item \texttt{dom\_w\_deg} se adapta din\'amicamente a la estructura del problema
-    \item Las asignaciones de operarios pueden propagarse despu\'es de fijar tiempos
-\end{itemize}
-
-\textbf{Ventajas esperadas:} Mejor adaptaci\'on a conflictos, exploraci\'on m\'as guiada.
-
-\textbf{Desventajas esperadas:} Mayor overhead computacional por heur\'istica din\'amica.
-
-\subsubsection{Estrategia 3: Operarios Primero}
-
-\begin{lstlisting}[language=minizinc]
-solve
-:: seq_search([
-     int_search([o[i,j] | i in JOB, j in TASK], 
-                first_fail, indomain_min),
-     int_search([s[i,j] | i in JOB, j in TASK], 
-                first_fail, indomain_min)
-   ])
-minimize W * end + (maxload - minload);
-\end{lstlisting}
-
-\textbf{Caracter\'isticas:}
-\begin{itemize}
-    \item \textbf{Fase 1:} Decide primero todas las asignaciones de operarios
-    \item \textbf{Fase 2:} Luego decide tiempos de inicio
-    \item Ambas fases usan \texttt{first\_fail}
-\end{itemize}
-
-\textbf{Justificaci\'on:}
-\begin{itemize}
-    \item Agrupar tareas por operario antes de planificar tiempos
-    \item Puede facilitar la detecci\'on temprana de infactibilidades relacionadas con operarios
-    \item Una vez fijados los operarios, el problema se descompone en subproblemas de scheduling
-\end{itemize}
-
-\textbf{Ventajas esperadas:} Buena descomposici\'on del problema, posible poda temprana.
-
-\textbf{Desventajas esperadas:} Puede fijar asignaciones de operarios prematuramente sin considerar consecuencias temporales.
-
-\subsection{Pruebas Realizadas}
-
-\subsubsection{Configuraci\'on de las Pruebas}
-
-Las pruebas se realizaron utilizando el script \texttt{run\_jobshop\_tests.sh} con los siguientes par\'ametros:
-
-\begin{itemize}
-    \item \textbf{Solver:} Gecode 6.3.0
     \item \textbf{L\'imite de tiempo:} 60,000 ms (60 segundos) por instancia
     \item \textbf{Semilla aleatoria:} 1 (para reproducibilidad)
-    \item \textbf{Modelos evaluados:} 3 estrategias de b\'usqueda
-    \item \textbf{Instancias:} 11 archivos de datos (data00.dzn a data10.dzn)
+    \item \textbf{Modo de soluci\'on:} Mejor soluci\'on encontrada (no todas las intermedias)
+    \item \textbf{Estad\'isticas habilitadas:} \texttt{-s} (para capturar nodos, propagaciones, fallos)
+    \item \textbf{Instancias:} 11 archivos (data00.dzn a data10.dzn)
+    \item \textbf{Modelos:} 3 estrategias (jobshop\_search\_1.mzn, jobshop\_search\_2.mzn, jobshop\_search\_3.mzn)
 \end{itemize}
 
-\textbf{Justificaci\'on del l\'imite de tiempo:} Las instancias de mayor tama\~no presentaban tiempos de ejecuci\'on excesivamente largos (superiores a 8 minutos con m\'ultiples hilos) sin convergencia. El l\'imite de 60 segundos permite evaluar el rendimiento relativo de las estrategias en un tiempo razonable, priorizando la exploraci\'on inicial del espacio de b\'usqueda.
-
-\subsubsection{Descripci\'on de las Instancias}
-
-Todas las instancias siguen el formato:
-\begin{lstlisting}[language=minizinc]
-jobs = <numero>;
-tasks = <numero>;
-k = <numero>;
-d = [| <matriz de duraciones> |];
-\end{lstlisting}
-
-\textbf{Caracter\'isticas de las instancias:}
+\textbf{Solvers utilizados:}
+\begin{itemize}
+    \item Estrategia 1: Gecode 6.3.0, Chuffed, HiGHS (comparaci\'on multi-solver)
+    \item Estrategias 2--3: Gecode 6.3.0 \'unicamente (\texttt{seq\_search} no soportado por otros solvers)
+\end{itemize}
 
 \begin{table}[h]
 \centering
+\small
 \begin{tabular}{lccccc}
 \toprule
-\textbf{Instancia} & \textbf{Jobs} & \textbf{Tasks} & \textbf{Operarios (k)} & \textbf{Operaciones Totales} & \textbf{Carga Total} \\
+\textbf{Inst.} & \textbf{Jobs} & \textbf{Tasks} & \textbf{k} & \textbf{Ops.} & \textbf{Carga} \\
 \midrule
 data00 & 4 & 4 & 3 & 16 & 86 \\
 data01 & 5 & 5 & 2 & 25 & 108 \\
@@ -363,270 +126,120 @@ data09 & 8 & 5 & 3 & 40 & 175 \\
 data10 & 8 & 6 & 4 & 48 & 187 \\
 \bottomrule
 \end{tabular}
-\caption{Caracter\'isticas de las instancias de prueba}
+\caption{Instancias (complejidad creciente, $k/\text{tasks} \in [0.4, 0.8]$)}
 \label{tab:instancias}
 \end{table}
 
-\textbf{Observaciones:}
-\begin{itemize}
-    \item Las instancias aumentan progresivamente en complejidad
-    \item La relaci\'on operarios/tareas var\'ia (desde $k/\text{tasks} = 0.4$ hasta $0.8$)
-    \item La carga total aumenta de 86 a 187
-\end{itemize}
-
 \subsubsection{Resultados Experimentales}
 
-\paragraph{Estrategia 1: B\'usqueda Libre}
+\paragraph{Estrategia 1 -- Comparaci\'on Multi-Solver}
 
 \begin{table}[h]
 \centering
-\small
-\begin{tabular}{lrrrrr}
+\tiny
+\begin{tabular}{lrr|rr|rr}
 \toprule
-\textbf{Instancia} & \textbf{Makespan} & \textbf{Desbalance} & \textbf{Nodos} & \textbf{Fallos} & \textbf{Propagaciones} \\
+& \multicolumn{2}{c}{\textbf{Gecode}} & \multicolumn{2}{c}{\textbf{Chuffed}} & \multicolumn{2}{c}{\textbf{HiGHS}} \\
+\textbf{Inst.} & \textbf{Mks} & \textbf{Desb} & \textbf{Mks} & \textbf{Desb} & \textbf{Mks} & \textbf{Desb} \\
 \midrule
-data00 & 86 & 86 & 8,656,470 & 4,328,217 & 928,732,226 \\
-data01 & 108 & 108 & 9,380,158 & 4,690,062 & 934,887,110 \\
-data02 & 112 & 112 & 9,141,499 & 4,570,731 & 910,658,768 \\
-data03 & 120 & 120 & 8,977,618 & 4,488,791 & 801,706,349 \\
-data04 & 118 & 118 & 8,163,317 & 4,081,638 & 841,537,470 \\
-data05 & 120 & 120 & 8,483,181 & 4,241,571 & 858,491,031 \\
-data06 & 138 & 138 & 8,708,307 & 4,354,133 & 783,575,748 \\
-data07 & 162 & 162 & 7,897,032 & 3,948,492 & 663,627,990 \\
-data08 & 155 & 155 & 8,461,777 & 4,230,865 & 793,876,685 \\
-data09 & 175 & 175 & 7,587,331 & 3,793,638 & 710,109,798 \\
-data10 & 187 & 187 & 7,500,955 & 3,750,452 & 750,849,628 \\
+data00 & 86 & 86 & 32 & 1 & 32 & 1 \\
+data01 & 108 & 108 & 58 & 2 & 55 & 0 \\
+data02 & 112 & 112 & 51 & 1 & 44 & 1 \\
+data03 & 120 & 120 & 45 & 16 & 45 & 0 \\
+data04 & 118 & 118 & 110 & 4 & 64 & 4 \\
+data05 & 120 & 120 & 61 & 7 & 43 & 0 \\
+data06 & 138 & 138 & 73 & 38 & 50 & 1 \\
+data07 & 162 & 162 & 140 & 0 & 88 & 0 \\
+data08 & 155 & 155 & 152 & 78 & 64 & 2 \\
+data09 & 175 & 175 & 174 & 98 & 70 & 1 \\
+data10 & 187 & 187 & 187 & 1 & 69 & 14 \\
+\midrule
+\textbf{Prom.} & 134.6 & 134.6 & 98.5 & 22.4 & 56.7 & 2.2 \\
 \bottomrule
 \end{tabular}
-\caption{Resultados de Estrategia 1 (B\'usqueda Libre)}
-\label{tab:resultados_s1}
+\caption{Estrategia 1 (b\'usqueda libre) con 3 solvers}
+\label{tab:est1_solvers}
 \end{table}
 
-\textbf{Observaciones cr\'iticas:}
-\begin{itemize}
-    \item \textbf{Desbalance m\'aximo:} En todas las instancias, el desbalance es igual al makespan
-    \item \textbf{Interpretaci\'on:} Esto indica que \textbf{todos los operarios excepto uno tienen carga cero}
-    \item En la columna de carga (no mostrada) se observa: $[\text{carga\_total}, 0, 0, \ldots]$
-    \item \textbf{Causa:} La estrategia por defecto no considera el objetivo de balanceo efectivamente
-    \item \textbf{N\'umero de nodos:} Muy alto (~8-9 millones en instancias peque\~nas)
-    \item \textbf{Propagaciones:} Entre 600 millones y 900 millones
-\end{itemize}
+\textbf{Observaciones:} Gecode: 100\% triviales. Chuffed: 27\% cr\'iticos. HiGHS: 0\% problem\'aticos, 45\% perfectos. \textbf{HiGHS claramente superior.}
 
-\textbf{Conclusi\'on:} Esta estrategia encuentra soluciones triviales donde un solo operario hace todo el trabajo. Aunque t\'ecnicamente v\'alidas, estas soluciones no son pr\'acticas ni deseables.
-
-\paragraph{Estrategia 2: B\'usqueda Secuencial con dom\_w\_deg}
+\paragraph{Estrategias 2 y 3 -- Solo Gecode}
 
 \begin{table}[h]
 \centering
-\small
-\begin{tabular}{lrrrrr}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrr|rrrr|rrrr}
 \toprule
-\textbf{Instancia} & \textbf{Makespan} & \textbf{Desbalance} & \textbf{Nodos} & \textbf{Fallos} & \textbf{Propagaciones} \\
+& \multicolumn{4}{c}{\textbf{Est. 1 (libre)}} & \multicolumn{4}{c}{\textbf{Est. 2 (dom\_w\_deg)}} & \multicolumn{4}{c}{\textbf{Est. 3 (op primero)}} \\
+\textbf{Inst.} & \textbf{Mks} & \textbf{Dsb} & \textbf{Nod(M)} & \textbf{Prop(M)} & \textbf{Mks} & \textbf{Dsb} & \textbf{Nod(M)} & \textbf{Prop(M)} & \textbf{Mks} & \textbf{Dsb} & \textbf{Nod(M)} & \textbf{Prop(M)} \\
 \midrule
-data00 & 39 & 1 & 11,048,555 & 5,524,261 & 1,178,703,001 \\
-data01 & 57 & 4 & 4,946,586 & 2,473,281 & 347,713,759 \\
-data02 & 54 & 1 & 9,969,532 & 4,984,745 & 1,204,675,845 \\
-data03 & 45 & 0 & 4,061 & 1,955 & 1,410,504 \\
-data04 & 62 & 0 & 2,868,894 & 1,434,410 & 486,862,749 \\
-data05 & 43 & 0 & 396,851 & 198,299 & 52,210,307 \\
-data06 & 65 & 1 & 8,615,337 & 4,307,617 & 952,185,260 \\
-data07 & 86 & 6 & 2,513,049 & 1,256,462 & 363,079,829 \\
-data08 & 66 & 1 & 6,460,261 & 3,230,108 & 1,050,313,215 \\
-data09 & 71 & 1 & 5,859,083 & 2,929,506 & 996,370,298 \\
-data10 & 84 & 1 & 6,196,054 & 3,097,958 & 857,916,673 \\
-\bottomrule
-\end{tabular}
-\caption{Resultados de Estrategia 2 (dom\_w\_deg para tiempos)}
-\label{tab:resultados_s2}
-\end{table}
-
-\textbf{Observaciones importantes:}
-\begin{itemize}
-    \item \textbf{Makespan dram\'aticamente reducido:} Comparado con Estrategia 1
-    \begin{itemize}
-        \item data00: 86 $\rightarrow$ 39 (54.7\% reducci\'on)
-        \item data01: 108 $\rightarrow$ 57 (47.2\% reducci\'on)
-        \item data03: 120 $\rightarrow$ 45 (62.5\% reducci\'on)
-    \end{itemize}
-    \item \textbf{Balanceo significativo:} Desbalance entre 0 y 6
-    \begin{itemize}
-        \item data03, data04, data05: Desbalance = 0 (balanceo perfecto)
-        \item Mayor\'ia: Desbalance $\leq$ 1 (casi perfecto)
-    \end{itemize}
-    \item \textbf{Nodos explorados:} Variable, pero con casos de eficiencia extrema
-    \begin{itemize}
-        \item data03: Solo 4,061 nodos (vs 8.9M en Estrategia 1)
-        \item data05: 396,851 nodos (vs 8.4M)
-    \end{itemize}
-    \item \textbf{Propagaciones:} A\'un muy altas, pero eficiencia por nodo mejorada
-\end{itemize}
-
-\textbf{Conclusi\'on:} Esta estrategia es \textbf{significativamente superior}, logrando soluciones de alta calidad con balanceo efectivo y makespans m\'inimos. La heur\'istica \texttt{dom\_w\_deg} demuestra su valor adaptativo.
-
-\paragraph{Estrategia 3: Operarios Primero}
-
-\begin{table}[h]
-\centering
-\small
-\begin{tabular}{lrrrrr}
-\toprule
-\textbf{Instancia} & \textbf{Makespan} & \textbf{Desbalance} & \textbf{Nodos} & \textbf{Fallos} & \textbf{Propagaciones} \\
+data00 & 86 & 86 & 8.7 & 929 & 39 & 1 & 11.0 & 1179 & 86 & 86 & 10.7 & 1147 \\
+data01 & 108 & 108 & 9.4 & 935 & 57 & 4 & 4.9 & 348 & 108 & 108 & 15.2 & 1026 \\
+data02 & 112 & 112 & 9.1 & 911 & 54 & 1 & 10.0 & 1205 & 112 & 112 & 11.3 & 1086 \\
+data03 & 120 & 120 & 9.0 & 802 & 45 & 0 & 0.004 & 1.4 & 120 & 120 & 12.8 & 1098 \\
+data04 & 118 & 118 & 8.2 & 842 & 62 & 0 & 2.9 & 487 & 118 & 118 & 13.6 & 996 \\
+data05 & 120 & 120 & 8.5 & 858 & 43 & 0 & 0.4 & 52 & 120 & 120 & 16.7 & 1153 \\
+data06 & 138 & 138 & 8.7 & 784 & 65 & 1 & 8.6 & 952 & 138 & 138 & 15.5 & 1067 \\
+data07 & 162 & 162 & 7.9 & 664 & 86 & 6 & 2.5 & 363 & 162 & 162 & 9.8 & 942 \\
+data08 & 155 & 155 & 8.5 & 794 & 66 & 1 & 6.5 & 1050 & 155 & 155 & 8.7 & 958 \\
+data09 & 175 & 175 & 7.6 & 710 & 71 & 1 & 5.9 & 996 & 175 & 175 & 8.1 & 818 \\
+data10 & 187 & 187 & 7.5 & 751 & 84 & 1 & 6.2 & 858 & 187 & 187 & 8.7 & 622 \\
 \midrule
-data00 & 86 & 86 & 10,717,053 & 5,358,504 & 1,146,528,186 \\
-data01 & 108 & 108 & 15,223,333 & 7,611,644 & 1,026,296,393 \\
-data02 & 112 & 112 & 11,312,284 & 5,656,120 & 1,085,806,822 \\
-data03 & 120 & 120 & 12,804,492 & 6,402,224 & 1,098,461,046 \\
-data04 & 118 & 118 & 13,626,036 & 6,812,990 & 995,898,055 \\
-data05 & 120 & 120 & 16,699,548 & 8,349,745 & 1,152,613,520 \\
-data06 & 138 & 138 & 15,456,023 & 7,727,984 & 1,066,657,338 \\
-data07 & 162 & 162 & 9,797,646 & 4,898,789 & 942,471,122 \\
-data08 & 155 & 155 & 8,666,460 & 4,333,197 & 958,498,638 \\
-data09 & 175 & 175 & 8,088,673 & 4,044,299 & 817,757,449 \\
-data10 & 187 & 187 & 8,660,372 & 4,330,147 & 621,775,327 \\
+\textbf{Prom.} & 134.6 & 134.6 & 8.4 & 816 & 61.1 & 1.5 & 5.4 & 772 & 134.6 & 134.6 & 11.9 & 992 \\
 \bottomrule
-\end{tabular}
-\caption{Resultados de Estrategia 3 (Operarios Primero)}
-\label{tab:resultados_s3}
+\end{tabular}%
+}
+\caption{Comparaci\'on de estrategias en Gecode 6.3.0}
+\label{tab:gecode_estrategias}
 \end{table}
 
 \textbf{Observaciones:}
 \begin{itemize}
-    \item \textbf{Resultados id\'enticos a Estrategia 1:} Mismo makespan, mismo desbalance extremo
-    \item \textbf{M\'as nodos explorados:} Peor que Estrategia 1 en casi todas las instancias
-    \begin{itemize}
-        \item data01: 15.2M nodos (vs 9.4M en Estrategia 1)
-        \item data05: 16.7M nodos (vs 8.5M en Estrategia 1)
-    \end{itemize}
-    \item \textbf{M\'as propagaciones:} Overhead adicional sin beneficio
+    \item \textbf{Est.1 vs Est.2:} \texttt{dom\_w\_deg} reduce makespan 55\% (134.6 $\rightarrow$ 61.1) y desbalance 99\% (134.6 $\rightarrow$ 1.5)
+    \item \textbf{Est.1 vs Est.3:} Calidad id\'entica, pero Est.3 usa 42\% m\'as nodos y 22\% m\'as propagaciones
+    \item \textbf{Est.2 eficiencia:} Mejor calidad con menos nodos promedio que Est.1 (5.4M vs 8.4M), pero alta varianza
+    \item \textbf{data03 notable:} Est.2 resuelve con solo 4K nodos (balanceo perfecto), vs 9M en Est.1
 \end{itemize}
-
-\textbf{Conclusi\'on:} Decidir operarios primero sin informaci\'on temporal resulta en decisiones pobres que luego no pueden revertirse. Esta estrategia es \textbf{estrictamente inferior} a las otras dos.
 
 \subsection{An\'alisis Comparativo}
 
-\subsubsection{Comparaci\'on de Makespan}
+\subsubsection{Hallazgo 1: El Solver Importa Tanto Como la Estrategia}
 
-\begin{figure}[h]
-\centering
-\begin{tabular}{lrrr}
-\toprule
-\textbf{Instancia} & \textbf{Estrategia 1} & \textbf{Estrategia 2} & \textbf{Estrategia 3} \\
-\midrule
-data00 & 86 & \textbf{39} & 86 \\
-data01 & 108 & \textbf{57} & 108 \\
-data02 & 112 & \textbf{54} & 112 \\
-data03 & 120 & \textbf{45} & 120 \\
-data04 & 118 & \textbf{62} & 118 \\
-data05 & 120 & \textbf{43} & 120 \\
-data06 & 138 & \textbf{65} & 138 \\
-data07 & 162 & \textbf{86} & 162 \\
-data08 & 155 & \textbf{66} & 155 \\
-data09 & 175 & \textbf{71} & 175 \\
-data10 & 187 & \textbf{84} & 187 \\
-\midrule
-\textbf{Mejora media} & --- & \textbf{54.3\%} & --- \\
-\bottomrule
-\end{tabular}
-\caption{Comparaci\'on de makespan entre estrategias}
-\label{tab:comp_makespan}
-\end{figure}
-
-\textbf{Conclusiones:}
-\begin{itemize}
-    \item Estrategia 2 \textbf{siempre} encuentra mejores soluciones
-    \item Mejora promedio: 54.3\% reducci\'on de makespan
-    \item Mejora m\'axima: 62.5\% (data03)
-    \item Mejora m\'inima: 47.2\% (data01)
-\end{itemize}
-
-\subsubsection{Comparaci\'on de Balanceo}
-
-El desbalance mide la diferencia entre la carga m\'axima y m\'inima de los operarios:
+Comparando resultados de Estrategia 1 (libre) entre solvers:
 
 \begin{itemize}
-    \item \textbf{Estrategias 1 y 3:} Desbalance = Makespan (un operario hace todo)
-    \item \textbf{Estrategia 2:} Desbalance $\leq$ 6 en todas las instancias
-    \begin{itemize}
-        \item 3 instancias con balanceo perfecto (desbalance = 0)
-        \item 6 instancias con desbalance = 1 (casi perfecto)
-    \end{itemize}
+    \item \textbf{HiGHS:} Makespan 56.7, desbalance 2.2, ~2.5K nodos
+    \item \textbf{Gecode Est.2 (con anotaciones):} Makespan 61.1, desbalance 1.5, ~5.4M nodos
+    \item \textbf{Chuffed:} Makespan 98.5, desbalance 22.4, ~1.5M nodos
+    \item \textbf{Gecode Est.1:} Makespan 134.6, desbalance 134.6, ~8.4M nodos
 \end{itemize}
 
-\textbf{Ejemplo concreto (data03):}
+\textbf{Conclusi\'on:} HiGHS sin anotaciones supera a Gecode con \texttt{dom\_w\_deg}, demostrando que heur\'isticas internas bien dise\~nadas eliminan necesidad de anotaciones expl\'icitas para las instacias probadas en este problema.
+
+\subsubsection{Hallazgo 2: Impacto de Estrategias en Gecode}
+
+Comparando las 3 estrategias implementadas (ver Tabla \ref{tab:gecode_estrategias}):
+
+\textbf{Observaciones clave:}
 \begin{itemize}
-    \item Carga total: 120
-    \item Operarios: 4
-    \item Estrategia 2: carga = [30, 30, 30, 30] $\rightarrow$ desbalance = 0
-    \item Estrategias 1/3: carga = [120, 0, 0, 0] $\rightarrow$ desbalance = 120
+    \item \textbf{Est.1:} Makespan prom. 134.6, desbalance 134.6 (100\% triviales), 8.4M nodos
+    \item \textbf{Est.2:} Makespan prom. 61.1 (55\% mejor), desbalance 1.5 (99\% mejor), 5.4M nodos
+    \item \textbf{Est.3:} Makespan prom. 134.6 (id\'entico a Est.1), 11.9M nodos (42\% peor eficiencia)
+    \item \textbf{Est.2 eficiencia variable:} data03 con 4K nodos vs data00 con 11M nodos (alta dependencia de estructura)
 \end{itemize}
 
-\subsubsection{Comparaci\'on de Eficiencia Computacional}
-
-\begin{table}[h]
-\centering
-\small
-\begin{tabular}{lrrr}
-\toprule
-\textbf{M\'etrica} & \textbf{Estrategia 1} & \textbf{Estrategia 2} & \textbf{Estrategia 3} \\
-\midrule
-Nodos promedio & 8,359,786 & 5,720,751 & 11,914,174 \\
-Propagaciones promedio & 816,191,255 & 771,920,976 & 992,342,155 \\
-Mejor instancia (nodos) & 7,500,955 & 4,061 & 8,088,673 \\
-\bottomrule
-\end{tabular}
-\caption{Eficiencia computacional promedio}
-\label{tab:eficiencia}
-\end{table}
-
-\textbf{Observaciones:}
-\begin{itemize}
-    \item Estrategia 2 tiene el \textbf{mejor promedio de nodos}
-    \item Estrategia 3 es la \textbf{menos eficiente} (42\% m\'as nodos que Estrategia 1)
-    \item La varianza en Estrategia 2 es alta: desde 4K hasta 11M nodos
-    \item Estrategias 1 y 3 muestran comportamiento consistentemente malo
-\end{itemize}
-
-\subsubsection{An\'alisis de Escalabilidad}
-
-Observando la tendencia de nodos explorados con el tama\~no del problema:
-
-\begin{itemize}
-    \item \textbf{Estrategias 1 y 3:} Nodos decrece ligeramente con instancias grandes
-    \begin{itemize}
-        \item Raz\'on probable: Alcanzan l\'imite de tiempo antes, reportan soluciones triviales tempranas
-    \end{itemize}
-    \item \textbf{Estrategia 2:} Comportamiento no mon\'otono
-    \begin{itemize}
-        \item data03, data05: Muy eficiente (estructura favorable)
-        \item data00, data02, data06: Menos eficiente (estructura compleja)
-    \end{itemize}
-\end{itemize}
-
-\textbf{Interpretaci\'on:} La estructura espec\'ifica de cada instancia (distribuci\'on de duraciones, n\'umero de operarios) afecta significativamente la dificultad del problema para Estrategia 2, mientras que las otras estrategias fallan uniformemente.
-
-\subsection{Conclusiones del Problema 1.2a}
+\subsection{Conclusiones}
 
 \begin{enumerate}
-    \item \textbf{Importancia cr\'itica de la estrategia de b\'usqueda:} Los resultados demuestran que la elecci\'on de estrategia puede significar la diferencia entre soluciones triviales inaceptables y soluciones de alta calidad. En este problema, la diferencia no es marginal sino \textbf{cualitativa}.
+    \item \textbf{HiGHS es el mejor solver para este problema:} Sin anotaciones de b\'usqueda, logra makespan promedio 56.7 (58\% mejor que Gecode sin anotaciones, 7\% mejor que Gecode con \texttt{dom\_w\_deg}), desbalance m\'aximo 14, y solo ~2.5K nodos. Sus heur\'isticas internas son superiores.
     
-    \item \textbf{Superioridad de dom\_w\_deg para problemas de scheduling multi-recurso:} La heur\'istica din\'amica \texttt{dom\_w\_deg} demostr\'o adaptarse efectivamente a la estructura del problema, logrando:
-    \begin{itemize}
-        \item Reducci\'on promedio del makespan del 54.3\%
-        \item Balanceo casi perfecto de cargas (desbalance $\leq$ 6)
-        \item Eficiencia computacional superior en promedio
-    \end{itemize}
+    \item \textbf{Las heur\'isticas por defecto var\'ian dr\'asticamente:} Gecode produce soluciones triviales (100\% casos), Chuffed tiene 27\% casos cr\'iticos, HiGHS 0\% casos problem\'aticos. La elecci\'on del solver es tan importante como la estrategia de b\'usqueda.
     
-    \item \textbf{El orden de las decisiones importa:} Decidir asignaciones de operarios antes que tiempos (Estrategia 3) resulta en decisiones prematuras sin suficiente informaci\'on, llevando a soluciones pobres. El enfoque correcto es decidir tiempos primero (donde la informaci\'on de duraciones y precedencias guía la b\'usqueda) y luego asignar operarios.
+    \item \textbf{Anotaciones expl\'icitas necesarias en Gecode:} \texttt{dom\_w\_deg} mejora Gecode 55\% (makespan 134.6 $\rightarrow$ 61.1), pero a\'un queda 8\% por debajo de HiGHS sin anotaciones. Las heur\'isticas adaptativas son efectivas pero no compensan totalmente deficiencias del solver base.
     
-    \item \textbf{Efectividad de restricciones redundantes:} La restricci\'on \texttt{cumulative}, aunque redundante l\'ogicamente, proporciona poda adicional crucial. Sin embargo, los resultados muestran que \textbf{por s\'i sola no es suficiente}: Estrategias 1 y 3 incluyen esta restricci\'on pero fallan igualmente.
+    \item \textbf{Decidir operarios primero es contraproducente:} Estrategia 3 produce resultados id\'enticos a Estrategia 1 pero con 42\% m\'as nodos. El orden temporal debe decidirse antes que asignaciones de recursos.
     
-    \item \textbf{Objetivos m\'ultiples requieren pesos cuidadosos:} La funci\'on $W \cdot \text{end} + \text{desbalance}$ con $W = \text{total} + 1$ efect\'ivamente prioriza makespan sin ignorar completamente el balanceo, pero \textbf{solo cuando la estrategia de b\'usqueda explora soluciones diversas}. Las estrategias por defecto convergen prematuramente a soluciones con un solo operario.
-    
-    \item \textbf{Ruptura de simetr\'ias esencial:} Las restricciones de ordenamiento de operarios (uso consecutivo, ordenamiento de cargas) son fundamentales para reducir el espacio de b\'usqueda. Sin embargo, deben combinarse con estrategias de b\'usqueda apropiadas para ser efectivas.
-    
-    \item \textbf{Variabilidad estructural:} Diferentes instancias con tama\~nos similares pueden tener dificultades muy distintas. La relaci\'on operarios/tareas, distribuci\'on de duraciones y estructura de precedencias interact\'uan de formas complejas que afectan la eficiencia del solver.
-    
-    \item \textbf{L\'imites pr\'acticos de tiempo:} El l\'imite de 60 segundos fue necesario para completar todas las pruebas, pero probablemente interrumpi\'o la b\'usqueda en algunas instancias. Estrategia 2 podr\'ia encontrar soluciones a\'un mejores con m\'as tiempo, mientras que Estrategias 1 y 3 probablemente no mejorar\'ian significativamente.
+    \item \textbf{Limitaci\'on de portabilidad:} \texttt{seq\_search} solo funciona en Gecode, imposibilitando aplicar Estrategia 2 a HiGHS para verificar si mejora a\'un m\'as sus ya excelentes resultados.
 \end{enumerate}
 
-\textbf{Recomendaci\'on final:} Para problemas de Job Shop con operarios limitados, se recomienda enfáticamente usar estrategias de b\'usqueda secuenciales que decidan tiempos de inicio con heur\'isticas din\'amicas (\texttt{dom\_w\_deg} o similar) antes de asignar operarios con \texttt{first\_fail}. Las estrategias por defecto o que priorizan asignaciones de recursos antes que decisiones temporales deben evitarse.
+\textbf{Recomendaci\'on:} Usar HiGHS sin anotaciones para este tipo de problemas. Si se requiere Gecode, aplicar Estrategia 2 (\texttt{dom\_w\_deg}).
