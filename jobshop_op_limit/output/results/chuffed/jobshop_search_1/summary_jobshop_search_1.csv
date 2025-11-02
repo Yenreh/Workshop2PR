@@ -1,2 +1,4 @@
 solver,model,data,end,desbalance,carga_por_operario,time_ms,nodes,failures,propagations
 chuffed,jobshop_search_1,data00,32,1,"[29, 29, 28]",40793,1221894,1156773,502766040
+chuffed,jobshop_search_1,data01,58,2,"[55, 53]",59912,1807795,1694537,752668615
+chuffed,jobshop_search_1,data02,51,1,"[38, 37, 37]",59908,1589195,1496771,698152606

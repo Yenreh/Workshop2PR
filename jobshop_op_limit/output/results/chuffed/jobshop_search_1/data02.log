@@ -1,0 +1,72 @@
+% Generated FlatZinc statistics:
+%%%mzn-stat: paths=0
+%%%mzn-stat: flatBoolVars=956
+%%%mzn-stat: flatIntVars=132
+%%%mzn-stat: flatBoolConstraints=344
+%%%mzn-stat: flatIntConstraints=1070
+%%%mzn-stat: evaluatedReifiedConstraints=957
+%%%mzn-stat: method="minimize"
+%%%mzn-stat: flatTime=0.100554
+%%%mzn-stat-end
+WARNING: the --time-out flag has recently been changed.The time-out is now provided in milliseconds instead of seconds
+% Pruned 50000 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 49999 learnt clauses
+% Pruned 49982 learnt clauses
+% Pruned 49971 learnt clauses
+% Pruned 50000 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49994 learnt clauses
+% Pruned 49994 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49994 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49994 learnt clauses
+% Pruned 49998 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49994 learnt clauses
+% Pruned 49996 learnt clauses
+% Pruned 49995 learnt clauses
+% Pruned 49995 learnt clauses
+% Pruned 49994 learnt clauses
+% Pruned 49993 learnt clauses
+% Pruned 49997 learnt clauses
+% Pruned 49995 learnt clauses
+% Pruned 49994 learnt clauses
+% Pruned 49993 learnt clauses
+% Pruned 49996 learnt clauses
+%%%mzn-stat: nodes=1589195
+%%%mzn-stat: failures=1496771
+%%%mzn-stat: restarts=125
+%%%mzn-stat: variables=12439
+%%%mzn-stat: intVars=184
+%%%mzn-stat: boolVariables=12253
+%%%mzn-stat: propagators=2141
+%%%mzn-stat: propagations=698152606
+%%%mzn-stat: peakDepth=91
+%%%mzn-stat: nogoods=1496771
+%%%mzn-stat: backjumps=85760
+%%%mzn-stat: peakMem=0.00
+%%%mzn-stat: time=59.908
+%%%mzn-stat: initTime=0.009
+%%%mzn-stat: solveTime=59.899
+%%%mzn-stat: objective=5764
+%%%mzn-stat: optTime=10.051
+%%%mzn-stat: baseMem=0.00
+%%%mzn-stat: trailMem=0.12
+%%%mzn-stat: randomSeed=1
+%%%mzn-stat-end
+end = 51
+carga_por_operario = [38, 37, 37]
+desbalance = 1
+Job 1:  28(op:1)  32(op:1)  33(op:3)  34(op:1)  35(op:1)
+Job 2:  20(op:1)  23(op:1)  28(op:3)  36(op:2)  42(op:3)
+Job 3:  16(op:1)  34(op:3)  42(op:2)  48(op:2)  50(op:1)
+Job 4:  10(op:3)  16(op:3)  18(op:2)  25(op:2)  29(op:2)
+Job 5:   0(op:1)   7(op:1)  12(op:2)  18(op:3)  19(op:3)
+----------
+% Time limit exceeded!
+%%%mzn-stat: nSolutions=1
+%%%mzn-stat-end
