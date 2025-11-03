@@ -32,7 +32,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Segunda compilación para actualizar referencias y tabla de contenidos
-echo "🔄 Segunda compilación (actualizando referencias)..."
+echo "Segunda compilación (actualizando referencias)..."
 pdflatex -interaction=nonstopmode -halt-on-error main.tex >> compile.log 2>&1
 if [ $? -ne 0 ]; then
     echo "Error en la segunda compilación."
@@ -76,10 +76,10 @@ if [ -f "main.pdf" ]; then
     read -p "¿Desea limpiar archivos auxiliares? (y/N): " -n 1 -r
     echo ""
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        echo "🧹 Limpiando archivos auxiliares..."
+        echo "Limpiando archivos auxiliares..."
         rm -f *.aux *.log *.toc *.out *.fls *.fdb_latexmk *.synctex.gz
         rm -f problems/*.aux
-        echo "✓ Limpieza completada"
+        echo "Limpieza completada"
     fi
     
     echo ""
